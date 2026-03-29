@@ -1,6 +1,6 @@
 package com.ashdev.speed
 
-import android.content.DialogInterface
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
@@ -28,42 +28,36 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = "Speed Test"
 
         binding.refreshButton.setOnClickListener {
             if (!isTesting) {
                 startSpeedTest()
             } else {
-                Toast.makeText(this, "Prueba en curso, por favor espera...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Prueba en curso, espera...", Toast.LENGTH_SHORT).show()
             }
         }
 
+        // Iniciar prueba automáticamente al abrir
         startSpeedTest()
     }
 
     private fun startSpeedTest() {
         if (!isNetworkAvailable()) {
             showNoInternetError()
+            Toast.makeText(this, "Sin conexión a Internet", Toast.LENGTH_LONG).show()
             return
         }
 
         isTesting = true
         binding.errorText.visibility = TextView.GONE
-        binding.speedText.text = getString(R.string.speed_testing)
+        binding.speedText.text = "0.00 Mbps"
         binding.speedGauge.setSpeed(0.0)
-        
-        // Mostrar indicador de carga en el botón
         binding.refreshButton.isEnabled = false
         
-        // Mostrar mensaje de prueba en progreso
-        Toast.makeText(this, "Probando velocidad...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Midiendo velocidad...", Toast.LENGTH_SHORT).show()
 
         lifecycleScope.launch {
-            // Primero probamos latencia
-            val latency = withContext(Dispatchers.IO) {
-                speedTester.testLatency()
-            }
-            
-            // Luego probamos velocidad con 3 intentos para mayor precisión
             val speedMbps = withContext(Dispatchers.IO) {
                 speedTester.testDownloadSpeedWithRetries(3)
             }
@@ -73,22 +67,20 @@ class MainActivity : AppCompatActivity() {
                 binding.refreshButton.isEnabled = true
                 
                 if (speedMbps > 0) {
-                    binding.speedText.text = getString(R.string.speed_mbps, speedMbps)
+                    val speedText = String.format("%.2f", speedMbps)
+                    binding.speedText.text = "$speedText Mbps"
                     binding.speedGauge.setSpeed(speedMbps)
                     
-                    // Mostrar latencia opcionalmente
-                    if (latency < 999) {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Latencia: ${latency}ms",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Velocidad: ${String.format("%.2f", speedMbps)} Mbps",
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     showNoInternetError()
                     Toast.makeText(
                         this@MainActivity,
-                        "Error al medir velocidad",
+                        "Error al medir velocidad. Verifica tu conexión.",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -98,7 +90,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showNoInternetError() {
         binding.errorText.visibility = TextView.VISIBLE
-        binding.speedText.text = getString(R.string.speed_mbps, 0.0)
+        binding.speedText.text = "0.00 Mbps"
         binding.speedGauge.setSpeed(0.0)
     }
 
@@ -134,32 +126,31 @@ class MainActivity : AppCompatActivity() {
 
     private fun showChangelogDialog() {
         val changelogText = """
-            Versión 1.1 - Mejoras importantes:
-            • Múltiples servidores de prueba para mayor precisión
-            • Pruebas con 3 intentos y eliminación de valores atípicos
-            • Medición de latencia (ping)
-            • Interfaz mejorada con indicadores de prueba
-            • Mayor estabilidad en conexiones rápidas
+            Versión 1.0 - Speed Test
             
-            Versión 1.0:
-            • Prueba básica de velocidad
-            • Diseño con aguja analógica
-            • Menú de información
-            • Splash animado
+            • Prueba de velocidad con servidor Cloudflare
+            • Aguja estilo fast.com
+            • Diseño minimalista
+            • Medición precisa de velocidad de descarga
+            
+            Próximas actualizaciones:
+            • Prueba de subida
+            • Historial de pruebas
+            • Más servidores
         """.trimIndent()
         
         AlertDialog.Builder(this)
-            .setTitle(R.string.changelog_title)
+            .setTitle("Nuevas funciones")
             .setMessage(changelogText)
-            .setPositiveButton(android.R.string.ok, null)
+            .setPositiveButton("OK", null)
             .show()
     }
 
     private fun showAboutDialog() {
         AlertDialog.Builder(this)
-            .setTitle(R.string.menu_about)
-            .setMessage(R.string.about_text)
-            .setPositiveButton(android.R.string.ok, null)
+            .setTitle("Acerca de")
+            .setMessage("Creado por AshDev con amor ❤️ para la comunidad\n\nContacto: ashdev@gmail.com")
+            .setPositiveButton("OK", null)
             .show()
     }
 }
