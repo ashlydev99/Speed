@@ -49,8 +49,8 @@ class MainActivity : AppCompatActivity() {
 
         isTesting = true
         binding.errorText.visibility = TextView.GONE
-        binding.speedText.text = "0.00 Mbps"
-        binding.speedGauge.setSpeed(0.0)
+        binding.speedText.text = "0.00"
+        binding.mbpsText.visibility = TextView.VISIBLE
         binding.refreshButton.isEnabled = false
         
         Toast.makeText(this, "Midiendo velocidad...", Toast.LENGTH_SHORT).show()
@@ -66,8 +66,7 @@ class MainActivity : AppCompatActivity() {
                 
                 if (speedMbps > 0) {
                     val speedText = String.format("%.2f", speedMbps)
-                    binding.speedText.text = "$speedText Mbps"
-                    binding.speedGauge.setSpeed(speedMbps)
+                    binding.speedText.text = speedText
                     
                     Toast.makeText(
                         this@MainActivity,
@@ -88,8 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showNoInternetError() {
         binding.errorText.visibility = TextView.VISIBLE
-        binding.speedText.text = "0.00 Mbps"
-        binding.speedGauge.setSpeed(0.0)
+        binding.speedText.text = "0.00"
     }
 
     private fun isNetworkAvailable(): Boolean {
@@ -125,7 +123,7 @@ class MainActivity : AppCompatActivity() {
     private fun showChangelogDialog() {
         AlertDialog.Builder(this)
             .setTitle("Nuevas funciones")
-            .setMessage("Versión 1.0\n\n• Prueba de velocidad de descarga\n• Aguja estilo fast.com\n• Múltiples servidores de respaldo")
+            .setMessage("Versión 1.0\n\n• Prueba de velocidad de descarga\n• Diseño limpio y minimalista\n• Múltiples servidores de respaldo")
             .setPositiveButton("OK", null)
             .show()
     }

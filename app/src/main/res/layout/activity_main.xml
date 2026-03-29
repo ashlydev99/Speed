@@ -15,31 +15,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.ashdev.speed.SpeedGaugeView
-        android:id="@+id/speedGauge"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="16dp"
-        android:background="@android:color/transparent"
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Velocidad de Internet"
+        android:textColor="@color/electric_blue"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toTopOf="@id/speedText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginTop="60dp" />
 
     <TextView
         android:id="@+id/speedText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/electric_blue"
-        android:textSize="48sp"
+        android:textSize="72sp"
         android:textStyle="bold"
-        android:text="0.00 Mbps"
-        app:layout_constraintTop_toBottomOf="@id/speedGauge"
+        android:text="0.00"
+        app:layout_constraintTop_toBottomOf="@id/titleText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="40dp" />
+
+    <TextView
+        android:id="@+id/mbpsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mbps"
+        android:textColor="@color/electric_blue"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/speedText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:id="@+id/errorText"
@@ -49,10 +62,10 @@
         android:textColor="@color/electric_red"
         android:textSize="18sp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/speedText"
+        app:layout_constraintTop_toBottomOf="@id/mbpsText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="30dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/refreshButton"
@@ -62,10 +75,10 @@
         android:backgroundTint="@color/dark_blue"
         app:borderWidth="0dp"
         app:tint="@color/electric_blue"
-        app:layout_constraintBottom_toTopOf="@id/footerText"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintStart_toStartOf="@id/mbpsText"
+        app:layout_constraintEnd_toEndOf="@id/mbpsText"
+        app:layout_constraintTop_toBottomOf="@id/mbpsText"
+        android:layout_marginTop="20dp" />
 
     <TextView
         android:id="@+id/footerText"
