@@ -1,6 +1,5 @@
 package com.ashdev.speed
 
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
@@ -38,7 +37,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Iniciar prueba automáticamente al abrir
         startSpeedTest()
     }
 
@@ -59,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val speedMbps = withContext(Dispatchers.IO) {
-                speedTester.testDownloadSpeedWithRetries(3)
+                speedTester.testDownloadSpeed()
             }
             
             withContext(Dispatchers.Main) {
@@ -80,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                     showNoInternetError()
                     Toast.makeText(
                         this@MainActivity,
-                        "Error al medir velocidad. Verifica tu conexión.",
+                        "Error: No se pudo medir la velocidad.\nVerifica tu conexión.",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -125,23 +123,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showChangelogDialog() {
-        val changelogText = """
-            Versión 1.0 - Speed Test
-            
-            • Prueba de velocidad con servidor Cloudflare
-            • Aguja estilo fast.com
-            • Diseño minimalista
-            • Medición precisa de velocidad de descarga
-            
-            Próximas actualizaciones:
-            • Prueba de subida
-            • Historial de pruebas
-            • Más servidores
-        """.trimIndent()
-        
         AlertDialog.Builder(this)
             .setTitle("Nuevas funciones")
-            .setMessage(changelogText)
+            .setMessage("Versión 1.0\n\n• Prueba de velocidad de descarga\n• Aguja estilo fast.com\n• Múltiples servidores de respaldo")
             .setPositiveButton("OK", null)
             .show()
     }

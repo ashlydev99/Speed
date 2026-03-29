@@ -4,8 +4,6 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import kotlin.math.cos
-import kotlin.math.sin
 
 class SpeedGaugeView @JvmOverloads constructor(
     context: Context,
@@ -16,57 +14,39 @@ class SpeedGaugeView @JvmOverloads constructor(
     private var currentSpeed = 0.0 // Mbps
     private var maxSpeed = 100.0   // Escala máxima 100 Mbps
     
-    // Colores estilo fast.com
-    private val backgroundColor = Color.parseColor("#0A1929")
-    private val arcColor = Color.parseColor("#00BFFF")
-    private val needleColor = Color.parseColor("#00BFFF")
-    private val centerColor = Color.parseColor("#00BFFF")
-    private val textColor = Color.parseColor("#00BFFF")
-    
-    private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = backgroundColor
-        style = Paint.Style.FILL
-    }
-    
-    private val arcBackgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#2C3E50")
+    // Pinturas
+    private val arcBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.parseColor("#333333")
         style = Paint.Style.STROKE
-        strokeWidth = 20f
+        strokeWidth = 25f
         strokeCap = Paint.Cap.ROUND
     }
     
     private val arcProgressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = arcColor
+        color = Color.parseColor("#00BFFF")
         style = Paint.Style.STROKE
-        strokeWidth = 20f
+        strokeWidth = 25f
         strokeCap = Paint.Cap.ROUND
     }
     
     private val needlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = needleColor
+        color = Color.parseColor("#FF4444")
         style = Paint.Style.FILL
     }
     
     private val centerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = centerColor
+        color = Color.WHITE
         style = Paint.Style.FILL
     }
     
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = textColor
-        textSize = 40f
-        textAlign = Paint.Align.CENTER
-        typeface = Typeface.DEFAULT_BOLD
-    }
-    
-    private val smallTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = textColor
-        textSize = 20f
+        color = Color.parseColor("#00BFFF")
+        textSize = 24f
         textAlign = Paint.Align.CENTER
     }
     
-    private val startAngle = 140f
-    private val sweepAngle = 260f
+    private val startAngle = 135f
+    private val sweepAngle = 270f
     
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -74,18 +54,18 @@ class SpeedGaugeView @JvmOverloads constructor(
         val width = width.toFloat()
         val height = height.toFloat()
         val centerX = width / 2
-        val centerY = height * 0.75f
+        val centerY = height / 2 + 50
         
         val radius = minOf(width, height) * 0.35f
         
-        // Fondo del arco (gris)
+        // 1. Dibujar fondo del arco (gris)
         canvas.drawArc(
             centerX - radius, centerY - radius,
             centerX + radius, centerY + radius,
-            startAngle, sweepAngle, false, arcBackgroundPaint
+            startAngle, sweepAngle, false, arcBgPaint
         )
         
-        // Arco de progreso (azul eléctrico)
+        // 2. Dibujar arco de progreso (azul)
         val percent = (currentSpeed / maxSpeed).coerceIn(0.0, 1.0)
         val currentSweep = percent * sweepAngle
         canvas.drawArc(
@@ -94,59 +74,52 @@ class SpeedGaugeView @JvmOverloads constructor(
             startAngle, currentSweep.toFloat(), false, arcProgressPaint
         )
         
-        // Aguja
+        // 3. Dibujar aguja
         val needleAngle = startAngle + (percent * sweepAngle).toFloat()
+        val needleAngleRad = Math.toRadians(needleAngle.toDouble())
         val needleLength = radius * 0.85f
-        val needleTipX = centerX + needleLength * cos(Math.toRadians(needleAngle.toDouble())).toFloat()
-        val needleTipY = centerY + needleLength * sin(Math.toRadians(needleAngle.toDouble())).toFloat()
-        
-        // Dibujar aguja con punta triangular
-        val needleBaseRadius = radius * 0.12f
-        val arrowSize = radius * 0.08f
-        
-        val path = Path()
-        path.moveTo(needleTipX, needleTipY)
-        
-        val angleRad = Math.toRadians(needleAngle.toDouble())
-        val perpAngle1 = angleRad + Math.PI / 2
-        val perpAngle2 = angleRad - Math.PI / 2
-        
-        val arrowX1 = needleTipX - arrowSize * cos(perpAngle1).toFloat()
-        val arrowY1 = needleTipY - arrowSize * sin(perpAngle1).toFloat()
-        val arrowX2 = needleTipX - arrowSize * cos(perpAngle2).toFloat()
-        val arrowY2 = needleTipY - arrowSize * sin(perpAngle2).toFloat()
-        
-        path.lineTo(arrowX1, arrowY1)
-        path.lineTo(arrowX2, arrowY2)
-        path.close()
-        
-        canvas.drawPath(path, needlePaint)
+        val needleTipX = centerX + (needleLength * cos(needleAngleRad)).toFloat()
+        val needleTipY = centerY + (needleLength * sin(needleAngleRad)).toFloat()
         
         // Línea de la aguja
-        canvas.drawLine(centerX, centerY, needleTipX, needleTipY, needlePaint)
+        val needleLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#FF4444")
+            style = Paint.Style.STROKE
+            strokeWidth = 8f
+        }
+        canvas.drawLine(centerX, centerY, needleTipX, needleTipY, needleLinePaint)
         
-        // Círculo central
-        canvas.drawCircle(centerX, centerY, needleBaseRadius, centerPaint)
+        // Círculo en el centro
+        canvas.drawCircle(centerX, centerY, 15f, centerPaint)
+        canvas.drawCircle(centerX, centerY, 12f, Paint().apply {
+            color = Color.parseColor("#00BFFF")
+            style = Paint.Style.FILL
+        })
         
-        // Marcar escala (0, 25, 50, 75, 100)
+        // 4. Dibujar marcas de velocidad
         for (i in 0..4) {
-            val value = i * 25
-            val angle = startAngle + (value / maxSpeed) * sweepAngle
-            val angleRadScale = Math.toRadians(angle.toDouble())
+            val speedValue = i * 25
+            val angle = startAngle + (speedValue.toDouble() / maxSpeed) * sweepAngle
+            val angleRad = Math.toRadians(angle)
             val markRadius = radius + 15f
-            val markX = centerX + markRadius * cos(angleRadScale).toFloat()
-            val markY = centerY + markRadius * sin(angleRadScale).toFloat()
+            val markX = centerX + (markRadius * cos(angleRad)).toFloat()
+            val markY = centerY + (markRadius * sin(angleRad)).toFloat()
             
-            canvas.drawText(value.toString(), markX, markY, smallTextPaint)
+            canvas.drawText(speedValue.toString(), markX, markY, textPaint)
         }
         
-        // Texto "Mbps" debajo de la aguja
-        canvas.drawText("Mbps", centerX, centerY + radius + 40, smallTextPaint)
+        // 5. Texto "Mbps" abajo
+        val mbpsPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#888888")
+            textSize = 18f
+            textAlign = Paint.Align.CENTER
+        }
+        canvas.drawText("Mbps", centerX, centerY + radius + 30, mbpsPaint)
     }
     
     fun setSpeed(speedMbps: Double) {
         currentSpeed = speedMbps.coerceIn(0.0, maxSpeed)
-        invalidate()
+        invalidate() // Forzar redibujo
     }
     
     fun setMaxSpeed(max: Double) {

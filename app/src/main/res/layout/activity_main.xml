@@ -11,7 +11,6 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/dark_blue"
         app:titleTextColor="@color/electric_blue"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -20,23 +19,27 @@
         android:id="@+id/speedGauge"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:background="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toTopOf="@id/speedText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="24dp" />
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp" />
 
     <TextView
         android:id="@+id/speedText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/electric_blue"
-        android:textSize="32sp"
+        android:textSize="48sp"
         android:textStyle="bold"
+        android:text="0.00 Mbps"
         app:layout_constraintTop_toBottomOf="@id/speedGauge"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="20dp" />
 
     <TextView
         android:id="@+id/errorText"
