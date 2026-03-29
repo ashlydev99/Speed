@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import kotlin.math.cos
+import kotlin.math.sin
 
 class SpeedGaugeView @JvmOverloads constructor(
     context: Context,
@@ -16,16 +18,16 @@ class SpeedGaugeView @JvmOverloads constructor(
     
     // Pinturas
     private val arcBgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.parseColor("#333333")
+        color = Color.parseColor("#2C3E50")
         style = Paint.Style.STROKE
-        strokeWidth = 25f
+        strokeWidth = 20f
         strokeCap = Paint.Cap.ROUND
     }
     
     private val arcProgressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#00BFFF")
         style = Paint.Style.STROKE
-        strokeWidth = 25f
+        strokeWidth = 20f
         strokeCap = Paint.Cap.ROUND
     }
     
@@ -39,9 +41,21 @@ class SpeedGaugeView @JvmOverloads constructor(
         style = Paint.Style.FILL
     }
     
+    private val centerSmallPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.parseColor("#00BFFF")
+        style = Paint.Style.FILL
+    }
+    
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.parseColor("#00BFFF")
         textSize = 24f
+        textAlign = Paint.Align.CENTER
+        typeface = Typeface.DEFAULT_BOLD
+    }
+    
+    private val mbpsPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.parseColor("#888888")
+        textSize = 18f
         textAlign = Paint.Align.CENTER
     }
     
@@ -58,14 +72,14 @@ class SpeedGaugeView @JvmOverloads constructor(
         
         val radius = minOf(width, height) * 0.35f
         
-        // 1. Dibujar fondo del arco (gris)
+        // 1. Dibujar fondo del arco (gris oscuro)
         canvas.drawArc(
             centerX - radius, centerY - radius,
             centerX + radius, centerY + radius,
             startAngle, sweepAngle, false, arcBgPaint
         )
         
-        // 2. Dibujar arco de progreso (azul)
+        // 2. Dibujar arco de progreso (azul eléctrico)
         val percent = (currentSpeed / maxSpeed).coerceIn(0.0, 1.0)
         val currentSweep = percent * sweepAngle
         canvas.drawArc(
@@ -86,17 +100,17 @@ class SpeedGaugeView @JvmOverloads constructor(
             color = Color.parseColor("#FF4444")
             style = Paint.Style.STROKE
             strokeWidth = 8f
+            strokeCap = Paint.Cap.ROUND
         }
         canvas.drawLine(centerX, centerY, needleTipX, needleTipY, needleLinePaint)
         
-        // Círculo en el centro
+        // Círculo central (blanco)
         canvas.drawCircle(centerX, centerY, 15f, centerPaint)
-        canvas.drawCircle(centerX, centerY, 12f, Paint().apply {
-            color = Color.parseColor("#00BFFF")
-            style = Paint.Style.FILL
-        })
         
-        // 4. Dibujar marcas de velocidad
+        // Círculo central pequeño (azul)
+        canvas.drawCircle(centerX, centerY, 10f, centerSmallPaint)
+        
+        // 4. Dibujar marcas de velocidad (0, 25, 50, 75, 100)
         for (i in 0..4) {
             val speedValue = i * 25
             val angle = startAngle + (speedValue.toDouble() / maxSpeed) * sweepAngle
@@ -108,22 +122,22 @@ class SpeedGaugeView @JvmOverloads constructor(
             canvas.drawText(speedValue.toString(), markX, markY, textPaint)
         }
         
-        // 5. Texto "Mbps" abajo
-        val mbpsPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = Color.parseColor("#888888")
-            textSize = 18f
-            textAlign = Paint.Align.CENTER
-        }
+        // 5. Texto "Mbps" debajo del velocímetro
         canvas.drawText("Mbps", centerX, centerY + radius + 30, mbpsPaint)
     }
     
     fun setSpeed(speedMbps: Double) {
         currentSpeed = speedMbps.coerceIn(0.0, maxSpeed)
-        invalidate() // Forzar redibujo
+        invalidate()
     }
     
     fun setMaxSpeed(max: Double) {
         maxSpeed = max
+        invalidate()
+    }
+    
+    fun reset() {
+        currentSpeed = 0.0
         invalidate()
     }
 }
