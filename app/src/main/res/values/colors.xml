@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dark_blue">#0A1929</color>   <!-- Fondo oscuro estilo Battle.net -->
+    <color name="electric_blue">#00BFFF</color>
+    <color name="electric_red">#FF3B3F</color>
+    <color name="bright_gray">#E0E0E0</color>
+    <color name="white">#FFFFFF</color>
+</resources>

@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Speed</string>
+    <string name="please_wait">Por favor espere...</string>
+    <string name="copyright">2026+ AshDev Todos los derechos reservados.</string>
+    <string name="speed_mbps">%.2f Mbps</string>
+    <string name="speed_testing">Probando...</string>
+    <string name="no_internet">SIN CONEXIÓN A INTERNET</string>
+    <string name="menu_functions">Funciones</string>
+    <string name="menu_about">Acerca de</string>
+    <string name="menu_exit">Salir</string>
+    <string name="about_text">Creado por AshDev con amor ❤️ para la comunidad\nContacto: ashdev99@gmail.com</string>
+    <string name="changelog_title">Nuevas funciones</string>
+</resources>

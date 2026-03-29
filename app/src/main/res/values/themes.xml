@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Speed" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/dark_blue</item>
+        <item name="colorPrimaryVariant">@color/dark_blue</item>
+        <item name="colorOnPrimary">@color/electric_blue</item>
+        <item name="colorSecondary">@color/electric_blue</item>
+        <item name="colorSecondaryVariant">@color/electric_blue</item>
+        <item name="colorOnSecondary">@color/dark_blue</item>
+        <item name="android:statusBarColor">@color/dark_blue</item>
+        <item name="android:windowBackground">@color/dark_blue</item>
+    </style>
+</resources>
